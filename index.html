@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Coordenadores de Equipes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-test {
+            width: auto;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+            color: black;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .coordenadores-cadastrados {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e1e1e1;
+        }
+
+        .coordenador-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .coordenador-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .coordenador-item p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-idade {
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+
+        .badge-sexo {
+            background: #fff0f0;
+            color: #cc0000;
+        }
+
+        .test-buttons {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .status-info {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .debug-info {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 12px;
+            font-family: monospace;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .url-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 12px;
+            word-break: break-all;
+            border: 1px solid #e1e1e1;
+        }
+
+        .categoria-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .categoria-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Cadastro de Coordenadores de Equipes</h1>
+        
+        <div class="status-info">
+            📋 Sistema de cadastro de coordenadores e equipes
+        </div>
+
+        <form id="cadastroForm">
+            <div class="form-group">
+                <label for="nomeCoordenador">Nome do Coordenador *</label>
+                <input 
+                    type="text" 
+                    id="nomeCoordenador" 
+                    name="nomeCoordenador" 
+                    placeholder="Digite o nome completo do coordenador"
+                    required
+                >
+                <div class="error" id="erroNome">Por favor, digite o nome do coordenador</div>
+            </div>
+
+            <div class="form-group">
+                <label for="emailCoordenador">E-mail do Coordenador *</label>
+                <input 
+                    type="email" 
+                    id="emailCoordenador" 
+                    name="emailCoordenador" 
+                    placeholder="exemplo@email.com"
+                    required
+                >
+                <div class="error" id="erroEmail">Por favor, digite um e-mail válido</div>
+            </div>
+
+            <div class="form-group">
+                <label for="nomeEquipe">Nome da Equipe *</label>
+                <input 
+                    type="text" 
+                    id="nomeEquipe" 
+                    name="nomeEquipe" 
+                    placeholder="Digite o nome da equipe"
+                    required
+                >
+                <div class="error" id="erroEquipe">Por favor, digite o nome da equipe</div>
+            </div>
+
+            <div class="form-group">
+                <label>Categoria</label>
+                <div class="categoria-group">
+                    <div>
+                        <label for="categoriaIdade">Idade *</label>
+                        <select id="categoriaIdade" name="categoriaIdade" required>
+                            <option value="">Selecione a categoria</option>
+                            <option value="Sub-13">Sub-13 (até 13 anos)</option>
+                            <option value="Sub-15">Sub-15 (14-15 anos)</option>
+                            <option value="Sub-17">Sub-17 (16-17 anos)</option>
+                            <option value="Sub-20">Sub-20 (18-20 anos)</option>
+                            <option value="Adulto">Adulto (acima de 20 anos)</option>
+                            <option value="Master">Master (acima de 35 anos)</option>
+                            <option value="Veterano">Veterano (acima de 45 anos)</option>
+                        </select>
+                        <div class="error" id="erroIdade">Por favor, selecione a categoria de idade</div>
+                    </div>
+
+                    <div>
+                        <label for="categoriaSexo">Sexo *</label>
+                        <select id="categoriaSexo" name="categoriaSexo" required>
+                            <option value="">Selecione o sexo</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Misto">Misto</option>
+                        </select>
+                        <div class="error" id="erroSexo">Por favor, selecione a categoria de sexo</div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">Cadastrar Coordenador</button>
+            <div class="loading" id="loading">⏳ Salvando dados...</div>
+        </form>
+
+        <div class="test-buttons">
+            <h3>🔧 Ferramentas de Teste</h3>
+            <button onclick="testarDados()" class="btn-test btn-success">
+                🧪 Testar com Dados
+            </button>
+            <button onclick="limparFormulario()" class="btn-test btn-warning">
+                🗑️ Limpar Formulário
+            </button>
+            <button onclick="limparLista()" class="btn-test btn-danger">
+                🗑️ Limpar Lista
+            </button>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✅ Coordenador cadastrado com sucesso!
+        </div>
+
+        <div class="debug-info" id="debugInfo">
+            <!-- Informações de debug serão exibidas aqui -->
+        </div>
+
+        <div class="coordenadores-cadastrados">
+            <h2>📊 Coordenadores Cadastrados</h2>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span id="contadorRegistros" style="color: #666; font-size: 14px;">
+                    (0 registros)
+                </span>
+            </div>
+            <div id="listaCoordenadores">
+                <p style="text-align: center; color: #666;">
+                    Nenhum coordenador cadastrado ainda.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =================================================================
+        // CONFIGURAÇÃO - COLE SUA URL DO APPS SCRIPT AQUI!
+        // =================================================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtokRkF7nGh6RKhOmBi2YSVP0v20lcw9yjEePGd4BGpR1Nfx2HGQDCvLNdSu8EbIYv/exec';
+
+        // =================================================================
+        // CÓDIGO PRINCIPAL
+        // =================================================================
+
+        // Array para armazenar os coordenadores localmente
+        let coordenadores = JSON.parse(localStorage.getItem('coordenadores')) || [];
+
+        // Prevenir envio padrão do formulário
+        document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            validarEEnviar();
+        });
+
+        function validarEEnviar() {
+            // Limpar mensagens de erro
+            document.querySelectorAll('.error').forEach(error => {
+                error.style.display = 'none';
+            });
+            
+            // Obter valores dos campos
+            const nome = document.getElementById('nomeCoordenador').value.trim();
+            const email = document.getElementById('emailCoordenador').value.trim();
+            const equipe = document.getElementById('nomeEquipe').value.trim();
+            const idade = document.getElementById('categoriaIdade').value;
+            const sexo = document.getElementById('categoriaSexo').value;
+            
+            let isValid = true;
+            
+            // Validações
+            if (!nome) {
+                document.getElementById('erroNome').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                document.getElementById('erroEmail').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!equipe) {
+                document.getElementById('erroEquipe').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!idade) {
+                document.getElementById('erroIdade').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!sexo) {
+                document.getElementById('erroSexo').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                salvarCoordenador(nome, email, equipe, idade, sexo);
+            }
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function salvarCoordenador(nome, email, equipe, idade, sexo) {
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            
+            try {
+                const coordenador = {
+                    nome: nome,
+                    email: email,
+                    equipe: equipe,
+                    idade: idade,
+                    sexo: sexo,
+                    data: new Date().toISOString(),
+                    id: Date.now() // ID único
+                };
+                
+                console.log('📤 Salvando coordenador:', coordenador);
+                mostrarDebug('📤 Salvando coordenador...');
+                
+                // Adicionar ao array local
+                coordenadores.unshift(coordenador); // Adiciona no início
+                
+                // Salvar no localStorage
+                localStorage.setItem('coordenadores', JSON.stringify(coordenadores));
+                
+                // Tentar salvar na nuvem (opcional)
+                salvarNaNuvem(coordenador);
+                
+                console.log('✅ Coordenador salvo localmente!');
+                mostrarDebug('✅ Coordenador salvo com sucesso!');
+                
+                // Mostrar mensagem de sucesso
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                successMessage.textContent = '✅ Coordenador cadastrado com sucesso!';
+                
+                // Limpar formulário
+                limparFormulario();
+                
+                // Atualizar lista
+                atualizarListaCoordenadores();
+                
+                // Esconder mensagem após 3 segundos
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('❌ Erro ao salvar:', error);
+                mostrarDebug('❌ Erro: ' + error.message);
+                alert('❌ Erro ao salvar coordenador: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        async function salvarNaNuvem(coordenador) {
+            try {
+                if (!GOOGLE_SCRIPT_URL.includes('SUA_URL_DO_APPS_SCRIPT')) {
+                    console.log('📤 Enviando para a nuvem...');
+                    
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(coordenador)
+                    });
+                    
+                    console.log('✅ Dados enviados para a nuvem');
+                    mostrarDebug('☁️  Dados sincronizados com a nuvem');
+                }
+            } catch (error) {
+                console.log('ℹ️  Dados salvos apenas localmente');
+            }
+        }
+
+        function atualizarListaCoordenadores() {
+            const lista = document.getElementById('listaCoordenadores');
+            const contador = document.getElementById('contadorRegistros');
+            
+            if (coordenadores.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; color: #666;">Nenhum coordenador cadastrado ainda.</p>';
+                contador.textContent = '(0 registros)';
+                return;
+            }
+            
+            console.log(`✅ ${coordenadores.length} coordenadores carregados`);
+            
+            lista.innerHTML = '';
+            contador.textContent = `(${coordenadores.length} registro${coordenadores.length !== 1 ? 's' : ''})`;
+            
+            coordenadores.forEach((coord, index) => {
+                const coordenadorDiv = document.createElement('div');
+                coordenadorDiv.className = 'coordenador-item';
+                
+                coordenadorDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                        <h3>${coord.nome}</h3>
+                        <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+                            ${index + 1}
+                        </span>
+                    </div>
+                    <p><strong>📧 E-mail:</strong> ${coord.email}</p>
+                    <p><strong>⚽ Equipe:</strong> ${coord.equipe}</p>
+                    <div style="display: flex; gap: 10px; margin-top: 8px;">
+                        <span class="badge badge-idade">${coord.idade}</span>
+                        <span class="badge badge-sexo">${coord.sexo}</span>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px; color: #888;">
+                        <strong>📅 Cadastrado em:</strong> ${new Date(coord.data).toLocaleDateString('pt-BR')} às ${new Date(coord.data).toLocaleTimeString('pt-BR')}
+                    </p>
+                    <button onclick="removerCoordenador(${coord.id})" style="margin-top: 10px; padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                        🗑️ Remover
+                    </button>
+                `;
+                
+                lista.appendChild(coordenadorDiv);
+            });
+        }
+        
+        function removerCoordenador(id) {
+            if (confirm('Tem certeza que deseja remover este coordenador?')) {
+                coordenadores = coordenadores.filter(coord => coord.id !== id);
+                localStorage.setItem('coordenadores', JSON.stringify(coordenadores));
+                atualizarListaCoordenadores();
+                mostrarDebug('🗑️ Coordenador removido');
+            }
+        }
+        
+        // Carregar coordenadores ao abrir a página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Sistema de coordenadores carregado!');
+            mostrarDebug('🚀 Sistema iniciado');
+            atualizarListaCoordenadores();
+        });
+
+        // =================================================================
+        // FERRAMENTAS DE TESTE E UTILITÁRIOS
+        // =================================================================
+
+        function testarDados() {
+            console.log('🧪 Inserindo dados de teste...');
+            
+            // Preencher formulário com dados de teste
+            document.getElementById('nomeCoordenador').value = 'Carlos Silva';
+            document.getElementById('emailCoordenador').value = 'carlos.silva@email.com';
+            document.getElementById('nomeEquipe').value = 'Dragões FC';
+            document.getElementById('categoriaIdade').value = 'Sub-17';
+            document.getElementById('categoriaSexo').value = 'Masculino';
+            
+            mostrarDebug('🧪 Dados de teste inseridos');
+            alert('✅ Dados de teste inseridos!\n\nClique em "Cadastrar Coordenador" para testar.');
+        }
+
+        function limparFormulario() {
+            document.getElementById('cadastroForm').reset();
+            document.querySelectorAll('.error').forEach(error => {
+                error.style.display = 'none';
+            });
+            console.log('🗑️ Formulário limpo');
+            mostrarDebug('🗑️ Formulário limpo');
+        }
+
+        function limparLista() {
+            if (confirm('Tem certeza que deseja limpar TODOS os coordenadores?')) {
+                coordenadores = [];
+                localStorage.removeItem('coordenadores');
+                atualizarListaCoordenadores();
+                console.log('🗑️ Todos os coordenadores removidos');
+                mostrarDebug('🗑️ Todos os dados foram limpos');
+            }
+        }
+
+        function exportarDados() {
+            if (coordenadores.length === 0) {
+                alert('Nenhum dado para exportar!');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(coordenadores, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'coordenadores_' + new Date().toISOString().split('T')[0] + '.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            mostrarDebug('📤 Dados exportados para JSON');
+        }
+
+        function importarDados(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    coordenadores = dados;
+                    localStorage.setItem('coordenadores', JSON.stringify(coordenadores));
+                    atualizarListaCoordenadores();
+                    mostrarDebug('📥 Dados importados com sucesso');
+                    alert('✅ Dados importados com sucesso!');
+                } catch (error) {
+                    mostrarDebug('❌ Erro ao importar dados: ' + error.message);
+                    alert('❌ Erro ao importar dados!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function mostrarDebug(mensagem) {
+            const debugInfo = document.getElementById('debugInfo');
+            const agora = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `[${agora}] ${mensagem}<br>`;
+            debugInfo.style.display = 'block';
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+        }
+
+        // Validação em tempo real
+        document.querySelectorAll('input, select').forEach(campo => {
+            campo.addEventListener('input', function() {
+                const errorId = `erro${this.name.charAt(0).toUpperCase() + this.name.slice(1)}`;
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            });
+        });
+
+        // Adicionar botões de exportação/importação ao debug
+        setTimeout(() => {
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.innerHTML += `
+                <div style="margin-top: 10px;">
+                    <button onclick="exportarDados()" style="padding: 5px 10px; margin-right: 5px; background: #28a745; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                        📤 Exportar Dados
+                    </button>
+                    <label style="padding: 5px 10px; background: #17a2b8; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                        📥 Importar Dados
+                        <input type="file" accept=".json" onchange="importarDados(event)" style="display: none;">
+                    </label>
+                </div>
+            `;
+        }, 1000);
+    </script>
+</body>
+</html>
