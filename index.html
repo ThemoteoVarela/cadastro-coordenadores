@@ -361,7 +361,7 @@
         // =================================================================
         // CONFIGURAÇÃO - COLE SUA URL DO APPS SCRIPT AQUI!
         // =================================================================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtokRkF7nGh6RKhOmBi2YSVP0v20lcw9yjEePGd4BGpR1Nfx2HGQDCvLNdSu8EbIYv/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3BnYOuYCN64JdaKNG4_j-CoxKaOrz1EvdfqPEHC-VjPkcy-dpgLR7yRGDZHY0O0vx/exec';
 
         // =================================================================
         // CÓDIGO PRINCIPAL
@@ -487,26 +487,34 @@
         }
 
         async function salvarNaNuvem(coordenador) {
+    try {
+        if (!GOOGLE_SCRIPT_URL.includes('SUA_URL_DO_APPS_SCRIPT')) {
+            console.log('📤 Enviando para a nuvem...');
+            mostrarDebug('☁️  Enviando dados para a nuvem...');
+            
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(coordenador)
+            });
+            
+            // Tentar ler a resposta (pode falhar em CORS)
             try {
-                if (!GOOGLE_SCRIPT_URL.includes('SUA_URL_DO_APPS_SCRIPT')) {
-                    console.log('📤 Enviando para a nuvem...');
-                    
-                    const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(coordenador)
-                    });
-                    
-                    console.log('✅ Dados enviados para a nuvem');
-                    mostrarDebug('☁️  Dados sincronizados com a nuvem');
-                }
-            } catch (error) {
-                console.log('ℹ️  Dados salvos apenas localmente');
+                const resultado = await response.json();
+                console.log('✅ Resposta da nuvem:', resultado);
+                mostrarDebug('✅ Nuvem: ' + resultado.message);
+            } catch (parseError) {
+                console.log('✅ Dados enviados (possível CORS)');
+                mostrarDebug('✅ Dados enviados para a nuvem');
             }
         }
+    } catch (error) {
+        console.log('ℹ️  Dados salvos apenas localmente: ' + error.message);
+        mostrarDebug('ℹ️  Dados salvos localmente (nuvem offline)');
+    }
+}
 
         function atualizarListaCoordenadores() {
             const lista = document.getElementById('listaCoordenadores');
@@ -681,3 +689,4 @@
     </script>
 </body>
 </html>
+
