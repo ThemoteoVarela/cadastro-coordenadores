@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Coordenadores de Equipes</title>
+    <title>Cadastro de Coordenadores - Categorias Personalizáveis</title>
     <style>
         * {
             margin: 0;
@@ -27,7 +27,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             padding: 40px;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
         }
 
         h1 {
@@ -42,6 +42,12 @@
             color: #444;
             margin-bottom: 15px;
             font-size: 20px;
+        }
+
+        h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 16px;
         }
 
         .form-group {
@@ -73,7 +79,7 @@
         }
 
         button {
-            padding: 15px;
+            padding: 12px 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -82,7 +88,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 100%;
         }
 
         button:hover {
@@ -101,9 +106,13 @@
             box-shadow: none;
         }
 
+        .btn-full {
+            width: 100%;
+        }
+
         .btn-test {
             width: auto;
-            padding: 10px 20px;
+            padding: 10px 15px;
             margin: 5px;
             font-size: 14px;
         }
@@ -119,6 +128,10 @@
 
         .btn-danger {
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
         }
 
         .success-message {
@@ -218,157 +231,508 @@
             overflow-y: auto;
         }
 
-        .url-display {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            font-size: 12px;
-            word-break: break-all;
-            border: 1px solid #e1e1e1;
-        }
-
         .categoria-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
 
+        .gerenciador-categorias {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .categorias-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .categoria-lista {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .categoria-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .categoria-item:hover {
+            background: #e9ecef;
+        }
+
+        .categoria-botoes {
+            display: flex;
+            gap: 5px;
+        }
+
+        .categoria-botoes button {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+        }
+
+        .categoria-section {
+            margin-bottom: 20px;
+        }
+
+        .tab-container {
+            margin: 20px 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #e1e1e1;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         @media (max-width: 768px) {
-            .categoria-group {
+            .categoria-group,
+            .categorias-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .tab-buttons {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚽ Cadastro de Coordenadores de Equipes</h1>
+        <h1>⚽ Cadastro de Coordenadores - Categorias Personalizáveis</h1>
         
         <div class="status-info">
-            📋 Sistema de cadastro de coordenadores e equipes
+            📋 Sistema com gerenciamento de categorias personalizáveis
         </div>
 
-        <form id="cadastroForm">
-            <div class="form-group">
-                <label for="nomeCoordenador">Nome do Coordenador *</label>
-                <input 
-                    type="text" 
-                    id="nomeCoordenador" 
-                    name="nomeCoordenador" 
-                    placeholder="Digite o nome completo do coordenador"
-                    required
-                >
-                <div class="error" id="erroNome">Por favor, digite o nome do coordenador</div>
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="abrirTab('cadastro')">📝 Cadastro</button>
+                <button class="tab-button" onclick="abrirTab('categorias')">⚙️ Gerenciar Categorias</button>
+                <button class="tab-button" onclick="abrirTab('lista')">📊 Lista de Coordenadores</button>
             </div>
 
-            <div class="form-group">
-                <label for="emailCoordenador">E-mail do Coordenador *</label>
-                <input 
-                    type="email" 
-                    id="emailCoordenador" 
-                    name="emailCoordenador" 
-                    placeholder="exemplo@email.com"
-                    required
-                >
-                <div class="error" id="erroEmail">Por favor, digite um e-mail válido</div>
-            </div>
-
-            <div class="form-group">
-                <label for="nomeEquipe">Nome da Equipe *</label>
-                <input 
-                    type="text" 
-                    id="nomeEquipe" 
-                    name="nomeEquipe" 
-                    placeholder="Digite o nome da equipe"
-                    required
-                >
-                <div class="error" id="erroEquipe">Por favor, digite o nome da equipe</div>
-            </div>
-
-            <div class="form-group">
-                <label>Categoria</label>
-                <div class="categoria-group">
-                    <div>
-                        <label for="categoriaIdade">Idade *</label>
-                        <select id="categoriaIdade" name="categoriaIdade" required>
-                            <option value="">Selecione a categoria</option>
-                            <option value="Sub-13">Sub-13 (até 13 anos)</option>
-                            <option value="Sub-15">Sub-15 (14-15 anos)</option>
-                            <option value="Sub-17">Sub-17 (16-17 anos)</option>
-                            <option value="Sub-20">Sub-20 (18-20 anos)</option>
-                            <option value="Adulto">Adulto (acima de 20 anos)</option>
-                            <option value="Master">Master (acima de 35 anos)</option>
-                            <option value="Veterano">Veterano (acima de 45 anos)</option>
-                        </select>
-                        <div class="error" id="erroIdade">Por favor, selecione a categoria de idade</div>
+            <!-- ABA CADASTRO -->
+            <div id="cadastro" class="tab-content active">
+                <form id="cadastroForm">
+                    <div class="form-group">
+                        <label for="nomeCoordenador">Nome do Coordenador *</label>
+                        <input 
+                            type="text" 
+                            id="nomeCoordenador" 
+                            name="nomeCoordenador" 
+                            placeholder="Digite o nome completo do coordenador"
+                            required
+                        >
+                        <div class="error" id="erroNome">Por favor, digite o nome do coordenador</div>
                     </div>
 
-                    <div>
-                        <label for="categoriaSexo">Sexo *</label>
-                        <select id="categoriaSexo" name="categoriaSexo" required>
-                            <option value="">Selecione o sexo</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Feminino">Feminino</option>
-                            <option value="Misto">Misto</option>
-                        </select>
-                        <div class="error" id="erroSexo">Por favor, selecione a categoria de sexo</div>
+                    <div class="form-group">
+                        <label for="emailCoordenador">E-mail do Coordenador *</label>
+                        <input 
+                            type="email" 
+                            id="emailCoordenador" 
+                            name="emailCoordenador" 
+                            placeholder="exemplo@email.com"
+                            required
+                        >
+                        <div class="error" id="erroEmail">Por favor, digite um e-mail válido</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nomeEquipe">Nome da Equipe *</label>
+                        <input 
+                            type="text" 
+                            id="nomeEquipe" 
+                            name="nomeEquipe" 
+                            placeholder="Digite o nome da equipe"
+                            required
+                        >
+                        <div class="error" id="erroEquipe">Por favor, digite o nome da equipe</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <div class="categoria-group">
+                            <div>
+                                <label for="categoriaIdade">Idade *</label>
+                                <select id="categoriaIdade" name="categoriaIdade" required>
+                                    <option value="">Selecione a categoria</option>
+                                </select>
+                                <div class="error" id="erroIdade">Por favor, selecione a categoria de idade</div>
+                            </div>
+
+                            <div>
+                                <label for="categoriaSexo">Sexo *</label>
+                                <select id="categoriaSexo" name="categoriaSexo" required>
+                                    <option value="">Selecione o sexo</option>
+                                </select>
+                                <div class="error" id="erroSexo">Por favor, selecione a categoria de sexo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-full">Cadastrar Coordenador</button>
+                    <div class="loading" id="loading">⏳ Salvando dados...</div>
+                </form>
+
+                <div class="test-buttons">
+                    <button onclick="testarDados()" class="btn-test btn-success">
+                        🧪 Testar com Dados
+                    </button>
+                    <button onclick="limparFormulario()" class="btn-test btn-warning">
+                        🗑️ Limpar Formulário
+                    </button>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    ✅ Coordenador cadastrado com sucesso!
+                </div>
+            </div>
+
+            <!-- ABA GERENCIAR CATEGORIAS -->
+            <div id="categorias" class="tab-content">
+                <div class="gerenciador-categorias">
+                    <h2>⚙️ Gerenciar Categorias</h2>
+                    
+                    <div class="categorias-container">
+                        <!-- CATEGORIAS IDADE -->
+                        <div class="categoria-section">
+                            <h3>📅 Categorias de Idade</h3>
+                            <div class="input-group">
+                                <input type="text" id="novaCategoriaIdade" placeholder="Nova categoria de idade (ex: Sub-13)">
+                                <button onclick="adicionarCategoria('idade')" class="btn-success">➕ Adicionar</button>
+                            </div>
+                            <div id="listaCategoriasIdade" class="categoria-lista">
+                                <!-- Lista de categorias de idade -->
+                            </div>
+                        </div>
+
+                        <!-- CATEGORIAS SEXO -->
+                        <div class="categoria-section">
+                            <h3>👥 Categorias de Sexo</h3>
+                            <div class="input-group">
+                                <input type="text" id="novaCategoriaSexo" placeholder="Nova categoria de sexo (ex: Misto)">
+                                <button onclick="adicionarCategoria('sexo')" class="btn-success">➕ Adicionar</button>
+                            </div>
+                            <div id="listaCategoriasSexo" class="categoria-lista">
+                                <!-- Lista de categorias de sexo -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="restaurarCategoriasPadrao()" class="btn-test btn-warning">
+                            🔄 Restaurar Padrão
+                        </button>
+                        <button onclick="exportarCategorias()" class="btn-test btn-info">
+                            📤 Exportar Categorias
+                        </button>
+                        <label class="btn-test btn-info" style="cursor: pointer;">
+                            📥 Importar Categorias
+                            <input type="file" id="importarCategorias" accept=".json" style="display: none;" onchange="importarCategorias(event)">
+                        </label>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" id="submitBtn">Cadastrar Coordenador</button>
-            <div class="loading" id="loading">⏳ Salvando dados...</div>
-        </form>
-
-        <div class="test-buttons">
-            <h3>🔧 Ferramentas de Teste</h3>
-            <button onclick="testarDados()" class="btn-test btn-success">
-                🧪 Testar com Dados
-            </button>
-            <button onclick="limparFormulario()" class="btn-test btn-warning">
-                🗑️ Limpar Formulário
-            </button>
-            <button onclick="limparLista()" class="btn-test btn-danger">
-                🗑️ Limpar Lista
-            </button>
-        </div>
-
-        <div class="success-message" id="successMessage">
-            ✅ Coordenador cadastrado com sucesso!
+            <!-- ABA LISTA DE COORDENADORES -->
+            <div id="lista" class="tab-content">
+                <div class="coordenadores-cadastrados">
+                    <h2>📊 Coordenadores Cadastrados</h2>
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <button onclick="atualizarListaCoordenadores()" class="btn-test">
+                            🔄 Atualizar Lista
+                        </button>
+                        <span id="contadorRegistros" style="margin-left: 10px; color: #666;">
+                            (0 registros)
+                        </span>
+                    </div>
+                    <div id="listaCoordenadores">
+                        <p style="text-align: center; color: #666;">
+                            Nenhum coordenador cadastrado ainda.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="exportarDados()" class="btn-test btn-info">
+                            📤 Exportar Dados
+                        </button>
+                        <label class="btn-test btn-info" style="cursor: pointer;">
+                            📥 Importar Dados
+                            <input type="file" id="importarDados" accept=".json" style="display: none;" onchange="importarDados(event)">
+                        </label>
+                        <button onclick="limparTodosDados()" class="btn-test btn-danger">
+                            🗑️ Limpar Todos os Dados
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="debug-info" id="debugInfo">
             <!-- Informações de debug serão exibidas aqui -->
         </div>
-
-        <div class="coordenadores-cadastrados">
-            <h2>📊 Coordenadores Cadastrados</h2>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <span id="contadorRegistros" style="color: #666; font-size: 14px;">
-                    (0 registros)
-                </span>
-            </div>
-            <div id="listaCoordenadores">
-                <p style="text-align: center; color: #666;">
-                    Nenhum coordenador cadastrado ainda.
-                </p>
-            </div>
-        </div>
     </div>
 
     <script>
         // =================================================================
-        // CONFIGURAÇÃO - COLE SUA URL DO APPS SCRIPT AQUI!
+        // CONFIGURAÇÃO INICIAL
         // =================================================================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3BnYOuYCN64JdaKNG4_j-CoxKaOrz1EvdfqPEHC-VjPkcy-dpgLR7yRGDZHY0O0vx/exec';
-
-        // =================================================================
-        // CÓDIGO PRINCIPAL
-        // =================================================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHVuIZC7cCzVBXYoUxyM5TFkyg81xZlY3EqsfIV3fAjmmAmbfpx1ZPxmBm8hr_V2Hl/exec';
 
         // Array para armazenar os coordenadores localmente
         let coordenadores = JSON.parse(localStorage.getItem('coordenadores')) || [];
+
+        // Categorias padrão
+        const categoriasPadrao = {
+            idade: [
+                "Sub-13 (até 13 anos)",
+                "Sub-15 (14-15 anos)", 
+                "Sub-17 (16-17 anos)",
+                "Sub-20 (18-20 anos)",
+                "Adulto (acima de 20 anos)",
+                "Master (acima de 35 anos)",
+                "Veterano (acima de 45 anos)"
+            ],
+            sexo: [
+                "Masculino",
+                "Feminino", 
+                "Misto"
+            ]
+        };
+
+        // Carregar categorias do localStorage ou usar padrão
+        let categorias = JSON.parse(localStorage.getItem('categorias')) || JSON.parse(JSON.stringify(categoriasPadrao));
+
+        // =================================================================
+        // FUNÇÕES DE GERENCIAMENTO DE CATEGORIAS
+        // =================================================================
+
+        function salvarCategorias() {
+            localStorage.setItem('categorias', JSON.stringify(categorias));
+            atualizarSelectsCategorias();
+            atualizarListasCategorias();
+            mostrarDebug('✅ Categorias salvas');
+        }
+
+        function adicionarCategoria(tipo) {
+            const input = tipo === 'idade' ? 
+                document.getElementById('novaCategoriaIdade') : 
+                document.getElementById('novaCategoriaSexo');
+            
+            const novaCategoria = input.value.trim();
+            
+            if (!novaCategoria) {
+                alert('Por favor, digite um nome para a categoria!');
+                return;
+            }
+            
+            if (categorias[tipo].includes(novaCategoria)) {
+                alert('Esta categoria já existe!');
+                return;
+            }
+            
+            categorias[tipo].push(novaCategoria);
+            input.value = '';
+            salvarCategorias();
+            mostrarDebug(`✅ Nova categoria ${tipo} adicionada: ${novaCategoria}`);
+        }
+
+        function removerCategoria(tipo, categoria) {
+            if (confirm(`Tem certeza que deseja remover a categoria "${categoria}"?`)) {
+                categorias[tipo] = categorias[tipo].filter(cat => cat !== categoria);
+                salvarCategorias();
+                mostrarDebug(`🗑️ Categoria ${tipo} removida: ${categoria}`);
+            }
+        }
+
+        function restaurarCategoriasPadrao() {
+            if (confirm('Tem certeza que deseja restaurar as categorias padrão? Isso removerá todas as categorias personalizadas.')) {
+                categorias = JSON.parse(JSON.stringify(categoriasPadrao));
+                salvarCategorias();
+                mostrarDebug('🔄 Categorias padrão restauradas');
+            }
+        }
+
+        function atualizarSelectsCategorias() {
+            // Atualizar select de idade
+            const selectIdade = document.getElementById('categoriaIdade');
+            selectIdade.innerHTML = '<option value="">Selecione a categoria</option>';
+            categorias.idade.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria;
+                option.textContent = categoria;
+                selectIdade.appendChild(option);
+            });
+            
+            // Atualizar select de sexo
+            const selectSexo = document.getElementById('categoriaSexo');
+            selectSexo.innerHTML = '<option value="">Selecione o sexo</option>';
+            categorias.sexo.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria;
+                option.textContent = categoria;
+                selectSexo.appendChild(option);
+            });
+        }
+
+        function atualizarListasCategorias() {
+            // Atualizar lista de categorias de idade
+            const listaIdade = document.getElementById('listaCategoriasIdade');
+            listaIdade.innerHTML = '';
+            categorias.idade.forEach(categoria => {
+                const item = document.createElement('div');
+                item.className = 'categoria-item';
+                item.innerHTML = `
+                    <span>${categoria}</span>
+                    <div class="categoria-botoes">
+                        <button onclick="removerCategoria('idade', '${categoria}')" class="btn-danger">🗑️</button>
+                    </div>
+                `;
+                listaIdade.appendChild(item);
+            });
+            
+            // Atualizar lista de categorias de sexo
+            const listaSexo = document.getElementById('listaCategoriasSexo');
+            listaSexo.innerHTML = '';
+            categorias.sexo.forEach(categoria => {
+                const item = document.createElement('div');
+                item.className = 'categoria-item';
+                item.innerHTML = `
+                    <span>${categoria}</span>
+                    <div class="categoria-botoes">
+                        <button onclick="removerCategoria('sexo', '${categoria}')" class="btn-danger">🗑️</button>
+                    </div>
+                `;
+                listaSexo.appendChild(item);
+            });
+        }
+
+        function exportarCategorias() {
+            const dataStr = JSON.stringify(categorias, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'categorias_coordenadores.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            mostrarDebug('📤 Categorias exportadas');
+        }
+
+        function importarCategorias(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    if (dados.idade && dados.sexo) {
+                        categorias = dados;
+                        salvarCategorias();
+                        mostrarDebug('📥 Categorias importadas com sucesso');
+                        alert('✅ Categorias importadas com sucesso!');
+                    } else {
+                        throw new Error('Formato de arquivo inválido');
+                    }
+                } catch (error) {
+                    mostrarDebug('❌ Erro ao importar categorias: ' + error.message);
+                    alert('❌ Erro ao importar categorias!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // =================================================================
+        // FUNÇÕES DE GERENCIAMENTO DE ABAS
+        // =================================================================
+
+        function abrirTab(tabName) {
+            // Esconder todas as abas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remover active de todos os botões
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            
+            // Ativar botão selecionado
+            event.currentTarget.classList.add('active');
+            
+            // Se for a aba de lista, atualizar
+            if (tabName === 'lista') {
+                atualizarListaCoordenadores();
+            }
+        }
+
+        // =================================================================
+        // FUNÇÕES PRINCIPAIS DO CADASTRO
+        // =================================================================
 
         // Prevenir envio padrão do formulário
         document.getElementById('cadastroForm').addEventListener('submit', function(e) {
@@ -487,34 +851,28 @@
         }
 
         async function salvarNaNuvem(coordenador) {
-    try {
-        if (!GOOGLE_SCRIPT_URL.includes('SUA_URL_DO_APPS_SCRIPT')) {
-            console.log('📤 Enviando para a nuvem...');
-            mostrarDebug('☁️  Enviando dados para a nuvem...');
-            
-            const response = await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(coordenador)
-            });
-            
-            // Tentar ler a resposta (pode falhar em CORS)
             try {
-                const resultado = await response.json();
-                console.log('✅ Resposta da nuvem:', resultado);
-                mostrarDebug('✅ Nuvem: ' + resultado.message);
-            } catch (parseError) {
-                console.log('✅ Dados enviados (possível CORS)');
-                mostrarDebug('✅ Dados enviados para a nuvem');
+                if (!GOOGLE_SCRIPT_URL.includes('SUA_URL_DO_APPS_SCRIPT')) {
+                    console.log('📤 Enviando para a nuvem...');
+                    mostrarDebug('☁️  Enviando dados para a nuvem...');
+                    
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(coordenador)
+                    });
+                    
+                    console.log('✅ Dados enviados para a nuvem');
+                    mostrarDebug('✅ Dados sincronizados com a nuvem');
+                }
+            } catch (error) {
+                console.log('ℹ️  Dados salvos apenas localmente: ' + error.message);
+                mostrarDebug('ℹ️  Dados salvos localmente (nuvem offline)');
             }
         }
-    } catch (error) {
-        console.log('ℹ️  Dados salvos apenas localmente: ' + error.message);
-        mostrarDebug('ℹ️  Dados salvos localmente (nuvem offline)');
-    }
-}
 
         function atualizarListaCoordenadores() {
             const lista = document.getElementById('listaCoordenadores');
@@ -568,16 +926,9 @@
                 mostrarDebug('🗑️ Coordenador removido');
             }
         }
-        
-        // Carregar coordenadores ao abrir a página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema de coordenadores carregado!');
-            mostrarDebug('🚀 Sistema iniciado');
-            atualizarListaCoordenadores();
-        });
 
         // =================================================================
-        // FERRAMENTAS DE TESTE E UTILITÁRIOS
+        // FUNÇÕES UTILITÁRIAS
         // =================================================================
 
         function testarDados() {
@@ -587,8 +938,8 @@
             document.getElementById('nomeCoordenador').value = 'Carlos Silva';
             document.getElementById('emailCoordenador').value = 'carlos.silva@email.com';
             document.getElementById('nomeEquipe').value = 'Dragões FC';
-            document.getElementById('categoriaIdade').value = 'Sub-17';
-            document.getElementById('categoriaSexo').value = 'Masculino';
+            document.getElementById('categoriaIdade').value = categorias.idade[2] || 'Sub-17';
+            document.getElementById('categoriaSexo').value = categorias.sexo[0] || 'Masculino';
             
             mostrarDebug('🧪 Dados de teste inseridos');
             alert('✅ Dados de teste inseridos!\n\nClique em "Cadastrar Coordenador" para testar.');
@@ -603,13 +954,17 @@
             mostrarDebug('🗑️ Formulário limpo');
         }
 
-        function limparLista() {
-            if (confirm('Tem certeza que deseja limpar TODOS os coordenadores?')) {
+        function limparTodosDados() {
+            if (confirm('Tem certeza que deseja limpar TODOS os coordenadores e categorias?')) {
                 coordenadores = [];
+                categorias = JSON.parse(JSON.stringify(categoriasPadrao));
                 localStorage.removeItem('coordenadores');
+                localStorage.setItem('categorias', JSON.stringify(categorias));
                 atualizarListaCoordenadores();
-                console.log('🗑️ Todos os coordenadores removidos');
+                salvarCategorias();
+                console.log('🗑️ Todos os dados foram limpos');
                 mostrarDebug('🗑️ Todos os dados foram limpos');
+                alert('✅ Todos os dados foram limpos!');
             }
         }
 
@@ -619,12 +974,18 @@
                 return;
             }
             
-            const dataStr = JSON.stringify(coordenadores, null, 2);
+            const dataParaExportar = {
+                coordenadores: coordenadores,
+                categorias: categorias,
+                dataExportacao: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(dataParaExportar, null, 2);
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'coordenadores_' + new Date().toISOString().split('T')[0] + '.json';
+            link.download = 'coordenadores_backup_' + new Date().toISOString().split('T')[0] + '.json';
             link.click();
             URL.revokeObjectURL(url);
             
@@ -639,8 +1000,18 @@
             reader.onload = function(e) {
                 try {
                     const dados = JSON.parse(e.target.result);
-                    coordenadores = dados;
-                    localStorage.setItem('coordenadores', JSON.stringify(coordenadores));
+                    
+                    if (dados.coordenadores) {
+                        coordenadores = dados.coordenadores;
+                        localStorage.setItem('coordenadores', JSON.stringify(coordenadores));
+                    }
+                    
+                    if (dados.categorias) {
+                        categorias = dados.categorias;
+                        localStorage.setItem('categorias', JSON.stringify(categorias));
+                        salvarCategorias();
+                    }
+                    
                     atualizarListaCoordenadores();
                     mostrarDebug('📥 Dados importados com sucesso');
                     alert('✅ Dados importados com sucesso!');
@@ -658,6 +1029,13 @@
             debugInfo.innerHTML += `[${agora}] ${mensagem}<br>`;
             debugInfo.style.display = 'block';
             debugInfo.scrollTop = debugInfo.scrollHeight;
+            
+            // Limpar debug após 30 segundos
+            setTimeout(() => {
+                if (debugInfo.children.length > 10) {
+                    debugInfo.innerHTML = '';
+                }
+            }, 30000);
         }
 
         // Validação em tempo real
@@ -671,22 +1049,25 @@
             });
         });
 
-        // Adicionar botões de exportação/importação ao debug
-        setTimeout(() => {
-            const debugInfo = document.getElementById('debugInfo');
-            debugInfo.innerHTML += `
-                <div style="margin-top: 10px;">
-                    <button onclick="exportarDados()" style="padding: 5px 10px; margin-right: 5px; background: #28a745; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                        📤 Exportar Dados
-                    </button>
-                    <label style="padding: 5px 10px; background: #17a2b8; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
-                        📥 Importar Dados
-                        <input type="file" accept=".json" onchange="importarDados(event)" style="display: none;">
-                    </label>
-                </div>
-            `;
-        }, 1000);
+        // =================================================================
+        // INICIALIZAÇÃO DO SISTEMA
+        // =================================================================
+
+        // Carregar categorias ao iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Sistema de coordenadores carregado!');
+            mostrarDebug('🚀 Sistema iniciado');
+            salvarCategorias(); // Isso atualiza os selects e listas
+            atualizarListaCoordenadores();
+        });
+
+        // Atualizar lista a cada 30 segundos
+        setInterval(() => {
+            const contador = document.getElementById('contadorRegistros');
+            if (contador.textContent && !contador.textContent.includes('(erro)')) {
+                atualizarListaCoordenadores();
+            }
+        }, 30000);
     </script>
 </body>
 </html>
-
